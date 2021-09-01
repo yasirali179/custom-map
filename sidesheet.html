@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Info Window With maxWidth</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <script src="https://use.fontawesome.com/7566ee45f4.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="up-bar">
+            <div class="up-bar-button" onclick="toggleMain()"><img src="./images/sidepanel.svg" alt="" width="21px">
+            </div>
+            <div class="up-bar-text">Fine Wine and Good Spirits </div>
+        </div>
+        <div id="sidepanel1" class="sidepanel1">
+            <div class="sidesheet-description">Fine Wine and Good Spirits </div>
+            <div class="sidesheet-divider"></div>
+            <div id="data_text_main">
+            </div>
+        </div>
+
+        <div id="mySidepanel" class="sidepanel">
+            <img id="head-image" src="" alt="" width="100%" style="display:flex">
+            <div class="over_head">
+                <div class="back-button" onclick="closeNav()"><i class="fa fa-arrow-left"></i></div>
+                <div id="over_text" class="over_heading_text"></div>
+                <div class="over_nav"><img src="./images/direction.svg" alt="" width="21px"></div>
+            </div>
+            <div id="detail-info">
+            </div>
+
+        </div>
+
+        <div id="map">
+        </div>
+    </div>
+
+</body>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGBLeq-Ii1z5lzYayIQuAnGgicO9wDyCU&callback=initMap&libraries=&v=weekly"
+    async></script>
+<script>
+    // This example displays a marker at the center of Australia.
+    // When the user clicks the marker, an info window opens.
+    // The maximum width of the info window is set to 200 pixels.
+    let map;
+    let arr = [
+        {
+            layer: "punjab", markerColor: "white", hide: false, expand: false, location: [{ lat: 31.5204, lng: 74.3587, name: "Lahore", description: "this is a lahore it is a beautifull lahore", email: "yasir.ali5144@gmail.com", phone: "+923431455514", website: "yasirali179.w3spaces.com", imageUrl: "wine and spirits 26 and asbury.jpeg" }, { lat: 33.9070, lng: 73.3943, name: "Murree", description: "abdc", email: "", phone: "", website: "" }, { lat: 32.9425, lng: 73.7257, name: "Jehlum", description: "", email: "", phone: "", website: "" }]
+        },
+        {
+            layer: "sindh", markerColor: "white", hide: false, expand: false, location: [{ lat: 33.6844, lng: 73.0479, name: "Islamabad", description: "", email: "", phone: "", website: "" }, { lat: 34.0151, lng: 71.5249, name: "Peshawar", description: "", email: "", phone: "", website: "" }, { lat: 31.4504, lng: 73.1350, name: "Faisalabad", description: "", email: "", phone: "", website: "" }]
+        },
+        {
+            layer: "KPK", markerColor: "white", hide: false, expand: false, location: [{ lat: 30.1575, lng: 71.5249, name: "Multan" }, { lat: 24.8607, lng: 67.0011, name: "Karachi" }]
+        },
+        {
+            layer: "Blochistan", location: []
+        }]
+
+
+    dataAdd()
+
+
+    function dataAdd() {
+        const attr = document.getElementById("data_text_main")
+        attr.innerHTML = ""
+        arr.forEach((data, Dataindex) => {
+            var child = document.createElement("div");   // Create a <button> element
+            child.className = "abcd"
+            child.innerHTML = `<input type="checkbox" onclick="hideMarkers('${data.layer}')" checked/>` + data.layer + `<span onclick="collaps('${Dataindex}')">c</span>`
+            attr.appendChild(child)
+
+            var length = data.location.length
+            if (!data.expand)
+                length = Math.min(2, data.location.length)
+
+            data.location.forEach((loc,locIndex) => {
+                if (!data.expand && locIndex < 2){
+                    const innerchild = document.createElement("div");   // Create a <button> element
+                        innerchild.className = "ab"
+                        innerchild.innerHTML = `<img src="./images/marker.svg" alt="" width="11px" style="margin-right:5px">` + loc.name
+                        innerchild.onclick = function () { openNav(loc) };
+
+                        attr.appendChild(innerchild)
+                }
+               
+            })
+        })
+
+    }
+
+    function collaps(Dataindex) {
+        arr[Dataindex].expand = !arr[Dataindex].expand
+        dataAdd()
+    }
+
+    function initMap() {
+        const center = {
+            lat: 30.3753,
+            lng: 69.3451,
+        };
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 6,
+            center: center,
+        });
+
+        const attr = document.getElementById("data_text_main")
+        for (let i = 0; i < arr.length; i++) {
+
+            arr[i].location.forEach((loc, index) => {
+                const marker = new google.maps.Marker({
+                    position: loc,
+                    map,
+                    title: loc.name,
+                });
+                marker.addListener("click", () => {
+                    openNav(loc)
+                });
+                arr[i].location[index]["marker"] = marker
+            })
+        }
+
+    }
+
+    function setMapOnAll(layer) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].layer == layer) {
+                if (arr[i].hide) {
+                    console.log("Please")
+                    arr[i].location.forEach((abc, index) => {
+                        arr[i].location[index].marker.setMap(map);
+                    })
+                    arr[i].hide = false
+                }
+                else {
+
+                    arr[i].location.forEach((abc, index) => {
+                        console.log("Please1")
+                        arr[i].location[index].marker.setMap(null);
+                    })
+                    arr[i].hide = true
+                }
+            }
+
+
+        }
+    }
+
+
+    function hideMarkers(layer) {
+        setMapOnAll(layer)
+    }
+
+    function dataEnter(data) {
+        document.getElementById("over_text").innerHTML = data.name
+        const container = document.getElementById("detail-info")
+        container.innerHTML = ""
+        document.getElementById("head-image").src = ""
+        if (data.imageUrl && data.imageUrl.length > 0) {
+            document.getElementById("head-image").src = data.imageUrl
+        }
+        if (data.description && data.description.length > 0) {
+            var child = document.createElement("div");
+            child.className = "detail-head"
+            child.innerHTML = "Description "
+            container.appendChild(child)
+            var child = document.createElement("div");
+            child.className = "detail-descrip"
+            child.innerHTML = data.description
+            container.appendChild(child)
+        }
+        if (data.email && data.email.length > 0) {
+            var child = document.createElement("div");
+            child.className = "detail-head"
+            child.innerHTML = "Email "
+            container.appendChild(child)
+            var child = document.createElement("a");
+            child.className = "detail-descrip"
+            child.href = "mailto:" + data.email
+            child.innerHTML = data.email
+            container.appendChild(child)
+        }
+        if (data.phone && data.phone.length > 0) {
+            var child = document.createElement("div");
+            child.className = "detail-head"
+            child.innerHTML = "Phone"
+            container.appendChild(child)
+            var child = document.createElement("a");
+            child.className = "detail-descrip"
+            child.href = "tel:" + data.phone
+            child.innerHTML = data.phone
+            container.appendChild(child)
+        }
+        if (data.website && data.website.length > 0) {
+            var child = document.createElement("div");
+            child.className = "detail-head"
+            child.innerHTML = "Website: "
+            container.appendChild(child)
+            var child = document.createElement("a");
+            child.className = "detail-descrip"
+            child.href = data.website
+            child.innerHTML = data.website
+            container.appendChild(child)
+        }
+    }
+    function openNav(data) {
+        console.log(data.marker)
+        dataEnter(data)
+        document.getElementById("mySidepanel").style.width = "300px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidepanel").style.width = "0";
+    }
+
+    function toggleMain() {
+
+        if (document.getElementById("sidepanel1").style.width == "300px")
+            document.getElementById("sidepanel1").style.width = "0";
+        else
+            document.getElementById("sidepanel1").style.width = "300px"
+    }
+</script>
+
+</html>
