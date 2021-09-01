@@ -120,23 +120,25 @@
 
             .abcd {
             	color: rgba(0, 0, 0, 0.87);
-            	font-size: 20px;
+            	font-size: 18px;
             	font-weight: 500;
             	font-family: Roboto, Arial, sans-serif;
             	margin-top: 20px;
+				margin-bottom: 20px;
             }
 
             .ab {
             	cursor: pointer;
             	display: flex;
             	font-size: 16px;
-            	margin-left: 15px;
+				margin-top: 5px;
+            	margin-left: 60px;
             	font-family: Roboto, Arial, sans-serif;
             	opacity: 0.6;
             }
 
             #data_text_main {
-            	margin-left: 45px;
+            	margin-left: 27px;
             }
 
             #detail-info {
@@ -180,4 +182,12 @@
 			.sidesheet-divider{
 				border-top: 1px solid #ccc;
 				margin-top: 30px;
+			}
+			.more{
+				cursor: pointer;
+				display: flex;
+				font-size: 14px;
+				margin-top: 5px;
+				margin-left: 60px;
+				font-family: Roboto, Arial, sans-serif;
 			}
